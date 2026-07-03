@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.log
+# Added by code-review-graph
+.code-review-graph/
+
+# Personal Claude Code settings (machine-specific, not for sharing)
+.claude/settings.local.json
