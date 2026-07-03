@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "Jot API",
+    "description": "All endpoints for the Jot notes & todos backend. Run 'Register' or 'Login' first — the token is saved automatically and every other request uses it. If the first request after a break times out, the free server is waking up: wait ~40s and retry.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://jot-backend-zx3h.onrender.com" },
+    { "key": "token", "value": "" },
+    { "key": "noteId", "value": "" },
+    { "key": "todoId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "0 · Health check",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "1 · Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data.token) {",
+                  "    pm.collectionVariables.set('token', res.data.token);",
+                  "    console.log('Token saved ✓');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data.token) {",
+                  "    pm.collectionVariables.set('token', res.data.token);",
+                  "    console.log('Token saved ✓');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 · Notes",
+      "item": [
+        {
+          "name": "Create note",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data._id) pm.collectionVariables.set('noteId', res.data._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My first note\",\n  \"content\": \"Hello from Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/notes"
+          }
+        },
+        {
+          "name": "List notes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/notes?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notes"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "search", "value": "first", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get one note",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/notes/{{noteId}}" }
+        },
+        {
+          "name": "Update note (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated title\"\n}" },
+            "url": "{{baseUrl}}/api/notes/{{noteId}}"
+          }
+        },
+        {
+          "name": "Delete note",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/notes/{{noteId}}" }
+        }
+      ]
+    },
+    {
+      "name": "3 · To-dos",
+      "item": [
+        {
+          "name": "Create todo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data._id) pm.collectionVariables.set('todoId', res.data._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Buy groceries\",\n  \"dueDate\": \"2026-07-10T18:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/api/todos"
+          }
+        },
+        {
+          "name": "List todos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos"],
+              "query": [
+                { "key": "completed", "value": "false", "disabled": true },
+                { "key": "sort", "value": "dueDate", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get one todo",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/todos/{{todoId}}" }
+        },
+        {
+          "name": "Mark done (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"completed\": true\n}" },
+            "url": "{{baseUrl}}/api/todos/{{todoId}}"
+          }
+        },
+        {
+          "name": "Delete todo",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos/{{todoId}}" }
+        }
+      ]
+    }
+  ]
+}

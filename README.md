@@ -5,6 +5,14 @@ Node.js, TypeScript, Express, MongoDB/Mongoose, Zod, and JWT auth. The only
 intended client is an Android app (Retrofit/Moshi), so every response uses
 one consistent, predictable JSON envelope.
 
+**Live server:** https://jot-backend-zx3h.onrender.com (free tier — first
+request after ~15 min idle takes 30–60s to wake the server; just retry).
+
+**📱 Building the Android app?** Start with [docs/API.md](docs/API.md) — a
+beginner-friendly guide to every endpoint — and import
+[docs/Jot-API.postman_collection.json](docs/Jot-API.postman_collection.json)
+into Postman to try the API with one click.
+
 ## Tech stack
 
 - Node.js + TypeScript (strict mode)
